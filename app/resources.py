@@ -12,14 +12,16 @@ from flask_restful import (
 )
 
 from .silent_language import text_to_silent_language_converter
+from .push_notification_client import IonicApiClient
 
 wit_client = wit.Wit(access_token='GNEKSIPCTVCBTRPT2NDVNXXBLPBLNM24')
+ionic_client = IonicApiClient.from_file('./api_key.json')
 
 
 class SilentLanguage(Resource):
     def __init__(self):
         self._parser = reqparse.RequestParser()
-        # self._parser.add_argument('text', type=str, required=False, location='json')
+        self._parser.add_argument('text', location="json", type=str)
         self._parser.add_argument(
             'audio',
             type=werkzeug.datastructures.FileStorage,
@@ -29,9 +31,21 @@ class SilentLanguage(Resource):
     def post(self):
         args = self._parser.parse_args()
         audio = args['audio']
-        text = audio_to_text(audio)
-        clip_location = text_to_silent_language_converter.convert(text)
-        return {'clip_location': os.path.basename(clip_location)}
+        text = args['text']
+        if audio is not None:
+            text = audio_to_text(audio)
+        if text is None:
+            return {}, 404
+        try:
+            clip_location = text_to_silent_language_converter.convert(text)
+        except Exception as e:
+            return {}, 404
+        data = {
+            'clip_location': os.path.basename(clip_location),
+            'text': text,
+        }
+        ionic_client.push_notification(data)
+        return data
 
 
 def audio_to_text(audio):
