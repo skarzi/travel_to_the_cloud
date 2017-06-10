@@ -1,0 +1,34 @@
+<style>
+	#video {
+		width: 100%;
+	}
+	#text {
+		text-align: center;
+		margin: 10px 0;
+	}
+	.content {
+		padding-top: 44px;
+	}
+	i {
+		margin-right: 5px;
+	}
+	.back {
+		text-align: center;
+		margin-top: 25px;
+	}
+
+</style>
+<div class="bar bar-header bar-balanced">
+  <h1 class="title">
+	Wideo
+  </h1>
+</div>
+	
+</ion-nav-bar>
+<ion-view view-title="Alarm" cache-view="false">
+  <ion-content class="content" scroll="false" scrollbar-y="true" scrollbar-x="false">
+    <h3 id="text">{{ text }}</h3>
+    <video ng-src="{{ clip_location | trusted }}" controls="controls" autoplay id="video"></video>
+    <h4 class="back" ng-click="goBack()"><i class="ion-chevron-left alert-icon icon"> Powrót</i></h4>
+  </ion-content>
+</ion-view>

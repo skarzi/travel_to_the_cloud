@@ -1,0 +1,83 @@
+<style>
+	.content {
+		padding-top: 44px;
+	}
+
+	textarea {
+		width: 100%;
+		border: 1px solid #666;
+		border-radius: 4px;
+		font-size: 20px;
+		line-height: 25px;
+		margin-top: 30px;
+	}
+	.button {
+		font-size: 30px;
+		padding: 10px 0;
+	}
+	.vertically-centered {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+	.header {
+		text-align: center;
+		margin: 15px 0;
+	}
+
+	hr {
+		width: 100%;
+		border-color: #ddd;
+	}
+
+	#loader {
+		position: absolute;
+		display: none;
+		left: 0; right: 0;
+		top: 0; bottom: 0;
+		background-color: #fff;
+	    width: 100%;
+	    height: 100%;
+	    z-index: 999999999;
+	}
+
+	#loader.visible {
+		display: block;
+	}
+
+	.spinner {
+		position: absolute;
+		animation: spin 2s linear infinite;
+		border: 16px solid #f3f3f3; /* Light grey */
+	    border-top: 16px solid #3498db; /* Blue */
+	    border-radius: 50%;
+		width: 120px;
+		height: 120px;
+		top: calc(50% - 60px);
+		left: calc(50% - 60px);
+	}
+
+	@keyframes spin {
+	    0% { transform: rotate(0deg); }
+	    100% { transform: rotate(360deg); }
+	}
+
+</style>
+<div class="bar bar-header bar-positive">
+  <h1 class="title">Silent Notifier 0.1</h1>
+</div>
+<ion-view view-title="Alarm" cache-view="false">
+	<ion-content scroll="false" scrollbar-y="false" scrollbar-x="false" class="content">
+		<div class="vertically-centered">
+			<div id="loader"><div class="spinner"></div></div>
+			<textarea rows="5" id="text-input" placeholder="Wpisz tekst..."></textarea>
+			<button class="button button-royal button-block" ng-click="send()">Wyślij</button>
+			<hr>
+			<button class="button button-balanced button-block" ng-click="record()" style="width: 100%">
+				<i class="ion-mic-a alert-icon"></i>
+				<br>Nagraj
+			</button>
+		 <!--- <p ng-show='!flag' class="error-no-data">Żeby wysyłać zgloszenia musisz najpierw uzupełnić dane personalne</p> -->
+		</div>
+	</ion-content>
+</ion-view>
