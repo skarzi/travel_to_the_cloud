@@ -104,7 +104,7 @@ class TextToSilentLanguageConverter:
         for w in sentence.split():
             clip = self._word2clip(w)
             if clip:
-                clips.append(clip.resize((460, 460)))
+                clips.append(clip.resize((360, 300)))
         print(clips)
         return concatenate_videoclips(clips)
 

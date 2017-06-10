@@ -10,11 +10,9 @@ from flask_restful import (
     Resource
 )
 
-from .push_notification_client import IonicApiClient
 from .silent_language import text_to_silent_language_converter
 
 wit_client = wit.Wit(access_token='GNEKSIPCTVCBTRPT2NDVNXXBLPBLNM24')
-ionic_client = IonicApiClient.from_file('./api_key.json')
 
 
 class SilentLanguage(Resource):
@@ -43,7 +41,6 @@ class SilentLanguage(Resource):
             'clip_location': os.path.basename(clip_location),
             'text': text,
         }
-        ionic_client.push_notification(data)
         return data
 
 
