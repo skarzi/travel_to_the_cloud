@@ -27,26 +27,24 @@ class SilentLanguage(Resource):
 
     def post(self):
         args = self._parser.parse_args()
-        print("ARGS = ", args)
         audio = args['audio']
-        print(audio)
         text = audio_to_text(audio)
         clip_location = text_to_silent_language_converter.convert(text)
         return {'clip_location': clip_location}
 
 
 def audio_to_text(audio):
-    fname = uuid.uuid4()
+    fname = str(uuid.uuid4())
     audio.save('/tmp/uploads/{0}.amr'.format(fname))
     try:
         ff = ffmpy.FFmpeg(
-            inputs={'/tmp/uploads/{0}.amr': None},
+            inputs={'/tmp/uploads/{0}.amr'.format(fname): None},
             outputs={'/tmp/wavs/{0}.wav'.format(fname): None}
         )
         ff.run()
-        data = open('/tmp/wavs/{0}.wav'.format(fname), 'rb').read()
     except Exception as e:
         print(e)
+    data = open('/tmp/wavs/{0}.wav'.format(fname), 'rb').read()
 
     url = 'https://api.wit.ai/speech'
 
@@ -61,11 +59,8 @@ def audio_to_text(audio):
         headers=headers
     )
 
-    print(response)
-    print(response.json())
-
     if response.status_code == 200:
         body = response.json()
-        return body['text_']
+        return body['_text']
     else:
         return None
