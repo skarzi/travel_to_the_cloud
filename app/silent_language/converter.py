@@ -1,11 +1,9 @@
-import os
 import functools
+import os
 import unicodedata
 
-import pexpect
 import Levenshtein
-import moviepy.video.fx.all as vfx
-
+import pexpect
 from many_stop_words import get_stop_words
 from moviepy.editor import (
     concatenate_videoclips,
@@ -25,8 +23,9 @@ def speed_by(func=None, by=1.0):
         print("SPEEDING!", result)
         if result is not None:
             print("SPEEDING!", result)
-            return result.fx(vfx.speedx, by)
+            return result.speedx(by)
         return result
+
     return wrapper
 
 
@@ -35,7 +34,9 @@ class TextToSilentLanguageConverter:
         self._movies_dir = movies_dir
         self._stopwords = get_stop_words('pl')
         self._movies_dict = self._create_movies_dict()
-        self._storage = './tmp/'
+        self._storage = 'tmp'
+        if not os.path.exists(self._storage):
+            os.mkdir(self._storage)
 
     def convert(self, sentence):
         clip = self._sentence2movie(sentence)
@@ -43,6 +44,10 @@ class TextToSilentLanguageConverter:
             self._storage,
             self._create_name(sentence),
         )
+
+        movie_path = unicodedata.normalize('NFKD', movie_path).encode('ascii', 'ignore').decode('utf-8')
+        print(movie_path)
+
         clip.write_videofile(movie_path)
         return movie_path
 
@@ -101,16 +106,21 @@ class TextToSilentLanguageConverter:
             clip = self._word2clip(w)
             if clip:
                 clips.append(clip.resize((460, 460)))
-        print(clips)
         return concatenate_videoclips(clips)
 
     def _create_movies_dict(self):
-        tmp_dict = dict()
+        dictionary = dict()
         for movie in os.listdir(self._movies_dir):
             key = unicodedata.normalize('NFC', movie.split('-')[0].lower())
-            tmp_dict[key] = movie
+            dictionary[key] = movie
+        dictionary['latać'] = dictionary['latać samolotem']
+        dictionary['odlecieć'] = dictionary['latać samolotem']
 
-        return tmp_dict
+        dictionary['jechać'] = dictionary['jeździć']
+        dictionary['odjechać'] = dictionary['jeździć']
+        dictionary['odjeżdżać'] = dictionary['jeździć']
+
+        return dictionary
 
 
 text_to_silent_language_converter = TextToSilentLanguageConverter('./movies')
