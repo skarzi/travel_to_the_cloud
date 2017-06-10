@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import wit
@@ -30,7 +31,7 @@ class SilentLanguage(Resource):
         audio = args['audio']
         text = audio_to_text(audio)
         clip_location = text_to_silent_language_converter.convert(text)
-        return {'clip_location': clip_location}
+        return {'clip_location': os.path.basename(clip_location)}
 
 
 def audio_to_text(audio):
