@@ -13,7 +13,7 @@ from moviepy.editor import (
 
 from ivr.wdnet import get_synonyms
 
-stopwords_exceptions = {'dzisiaj', 'nie'}
+stopwords_exceptions = {'dzisiaj', 'nie', 'kiedy'}
 
 
 def speed_by(func=None, by=1.0):
@@ -40,6 +40,7 @@ class TextToSilentLanguageConverter:
         self._storage = './tmp/videos'
 
     def convert(self, sentence):
+        sentence = sentence.strip('?').strip()
         clip = self._sentence2movie(sentence)
         movie_path = os.path.join(
             self._storage,
@@ -53,13 +54,12 @@ class TextToSilentLanguageConverter:
         return name.strip('.') + '.mp4'
 
     def _lemmatize(self, word):
-        child = pexpect.spawn('morfeusz_analyzer', encoding='utf-8')
-        child.expect('sgjp \(default\)\r\n')
+        child = pexpect.spawn('morfeusz_analyzer')
+        child.expect('\)\r\n')
         child.sendline(word)
         child.readline()
-        child.kill(1)
         response = child.readline()
-        return response.split(',')[3].split(':')[0].lower()
+        return response.decode('utf-8').split(',')[3].split(':')[0].lower()
 
     def _find_synonym(self, word):
         for k, p in self._movies_dict.items():
@@ -117,6 +117,7 @@ class TextToSilentLanguageConverter:
         tmp_dict['latać'] = tmp_dict['latać samolotem']
         tmp_dict['odlecieć'] = tmp_dict['latać samolotem']
         tmp_dict['odlatywać'] = tmp_dict['latać samolotem']
+        tmp_dict['leci'] = tmp_dict['latać samolotem']
 
         tmp_dict['jechać'] = tmp_dict['jeździć']
         tmp_dict['odjechać'] = tmp_dict['jeździć']
@@ -131,6 +132,5 @@ class TextToSilentLanguageConverter:
         tmp_dict['otwarty'] = tmp_dict['otwierać']
 
         return tmp_dict
-
 
 text_to_silent_language_converter = TextToSilentLanguageConverter('./movies')

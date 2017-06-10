@@ -32,10 +32,12 @@ class SilentLanguage(Resource):
         if audio is not None:
             text = audio_to_text(audio)
         if text is None:
+            print("audio is none")
             return {}, 404
         try:
             clip_location = text_to_silent_language_converter.convert(text)
         except Exception as e:
+            print("clip is none is none")
             return {}, 404
         data = {
             'clip_location': os.path.basename(clip_location),
