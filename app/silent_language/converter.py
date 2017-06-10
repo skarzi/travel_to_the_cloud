@@ -35,7 +35,7 @@ class TextToSilentLanguageConverter:
         self._movies_dir = movies_dir
         self._stopwords = get_stop_words('pl')
         self._movies_dict = self._create_movies_dict()
-        self._storage = './tmp/'
+        self._storage = '/tmp/videos'
 
     def convert(self, sentence):
         clip = self._sentence2movie(sentence)
