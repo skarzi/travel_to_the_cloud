@@ -1,11 +1,10 @@
-import os
 import functools
+import os
 import unicodedata
 
-import pexpect
 import Levenshtein
 import moviepy.video.fx.all as vfx
-
+import pexpect
 from many_stop_words import get_stop_words
 from moviepy.editor import (
     concatenate_videoclips,
@@ -27,6 +26,7 @@ def speed_by(func=None, by=1.0):
             print("SPEEDING!", result)
             return result.fx(vfx.speedx, by)
         return result
+
     return wrapper
 
 
@@ -109,6 +109,22 @@ class TextToSilentLanguageConverter:
         for movie in os.listdir(self._movies_dir):
             key = unicodedata.normalize('NFC', movie.split('-')[0].lower())
             tmp_dict[key] = movie
+
+        tmp_dict['latać'] = tmp_dict['latać samolotem']
+        tmp_dict['odlecieć'] = tmp_dict['latać samolotem']
+        tmp_dict['odlatywać'] = tmp_dict['latać samolotem']
+
+        tmp_dict['jechać'] = tmp_dict['jeździć']
+        tmp_dict['odjechać'] = tmp_dict['jeździć']
+        tmp_dict['odjeżdżać'] = tmp_dict['jeździć']
+
+        tmp_dict['zgłosić'] = tmp_dict['iść']
+        tmp_dict['przyjść'] = tmp_dict['iść']
+        tmp_dict['zgłoszenie'] = tmp_dict['iść']
+
+        tmp_dict['proszony'] = tmp_dict['prosić']
+
+        tmp_dict['otwarty'] = tmp_dict['otwierać']
 
         return tmp_dict
 
