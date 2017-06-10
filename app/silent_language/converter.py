@@ -53,12 +53,13 @@ class TextToSilentLanguageConverter:
         return name.strip('.') + '.mp4'
 
     def _lemmatize(self, word):
-        child = pexpect.spawn('morfeusz_analyzer')
-        child.expect('\)\r\n')
+        child = pexpect.spawn('morfeusz_analyzer', encoding='utf-8')
+        child.expect('sgjp \(default\)\r\n')
         child.sendline(word)
         child.readline()
+        child.kill(1)
         response = child.readline()
-        return response.decode('utf-8').split(',')[3].split(':')[0].lower()
+        return response.split(',')[3].split(':')[0].lower()
 
     def _find_synonym(self, word):
         for k, p in self._movies_dict.items():
@@ -77,7 +78,7 @@ class TextToSilentLanguageConverter:
         if lem not in stopwords_exceptions and word in self._stopwords:
             return
         if word not in self._movies_dict:
-            lemmatized = self._lemmatize(word) or word
+            lemmatized = self._lemmatize(word)
         else:
             lemmatized = word
         clip = self._movies_dict.get(lemmatized, None)

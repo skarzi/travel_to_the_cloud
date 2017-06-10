@@ -1,18 +1,17 @@
 import os
 import uuid
 
-import wit
 import ffmpy
 import requests
 import werkzeug
-
+import wit
 from flask_restful import (
     reqparse,
     Resource
 )
 
-from .silent_language import text_to_silent_language_converter
 from .push_notification_client import IonicApiClient
+from .silent_language import text_to_silent_language_converter
 
 wit_client = wit.Wit(access_token='GNEKSIPCTVCBTRPT2NDVNXXBLPBLNM24')
 ionic_client = IonicApiClient.from_file('./api_key.json')
