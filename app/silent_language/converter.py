@@ -13,6 +13,8 @@ from moviepy.editor import (
 
 from ivr.wdnet import get_synonyms
 
+stopwords_exceptions = {'dzisiaj', 'nie'}
+
 
 def speed_by(func=None, by=1.0):
     if func is None:
@@ -56,7 +58,7 @@ class TextToSilentLanguageConverter:
         child.sendline(word)
         child.readline()
         response = child.readline()
-        return response.decode('utf-8').split(',')[3].split(':')[0]
+        return response.decode('utf-8').split(',')[3].split(':')[0].lower()
 
     def _find_synonym(self, word):
         for k, p in self._movies_dict.items():
@@ -71,7 +73,8 @@ class TextToSilentLanguageConverter:
 
     @speed_by(by=1.5)
     def _word2clip(self, word):
-        if word in self._stopwords:
+        lem = self._lemmatize(word)
+        if lem not in stopwords_exceptions and word in self._stopwords:
             return
         if word not in self._movies_dict:
             lemmatized = self._lemmatize(word) or word
